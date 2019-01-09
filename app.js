@@ -21,7 +21,16 @@ const sass = require('node-sass-middleware');
 const multer = require('multer');
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 const router = express.Router()
-//const multipartWare = multipart()
+const cloudinary = require('cloudinary')
+cloudinary.config({
+  cloud_name: 'dgaslxr3t',
+  api_key: '494279988142415',
+  api_secret: 'MtK24am4PrteMkc3qRRQukXToLo'
+})
+const multipart = require('connect-multiparty');
+const multipartWare = multipart();
+
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -126,7 +135,7 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 /**
  * Primary app routes.
  */
-app.get('/my_articles', articlecontroller.index);
+
 app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
@@ -144,6 +153,9 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/my_articles', passportConfig.isAuthenticated, articlecontroller.index);
+app.post('/my_articles', passportConfig.isAuthenticated, multipartWare, articlecontroller.postArticle);
+// app.get('/my_articles/all', passportConfig.isAuthenticated, articlecontroller.postArticle);
 
 /**
  * API examples routes.
