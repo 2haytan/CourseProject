@@ -1,6 +1,7 @@
 const cloudinary = require('cloudinary')
 const fs = require('fs')
 const Article = require('../models/Article');
+const User = require('../models/User');
 
 exports.index = (req, res) => {
   res.render('articles');
@@ -22,8 +23,9 @@ function saveArticle(obj) {
 };
 
 exports.postArticle = (req, res) => {
-  if (req.files) {
-    cloudinary.uploader.upload(req.files.image.path, (result) => {
+  // if( existedTitle === title) nahuy
+  image = "https://www.rd.com/wp-content/uploads/2017/10/yes-it-s-possible-to-cook-an-egg-without-heat_618240320-oksana-mizina-760x506.jpg"
+    cloudinary.uploader.upload(image, (result) => {
       var obj = {
         author: req.user.id,
         text: req.body.text,
@@ -40,40 +42,25 @@ exports.postArticle = (req, res) => {
         {effect: 'sepia'}
       ]
     })
-  } else {
-    saveArticle({
-      author: req.user.id,
-      text: req.body.text,
-      title: req.body.title,
-      description: req.body.description,
-      ingredients: req.body.ingredients,
-      category: req.body.category,
-      feature_img: '',
-    })
   }
-  console.log("user _id: " + req.user.id);
-  saveArticle({
-    author: req.user.id,
-    text: req.body.text,
-    title: req.body.title,
-    description: req.body.description,
-    ingredients: req.body.ingredients,
-    category: req.body.category,
-    feature_img: '',
-  });
-  res.redirect('/');
-}
+//   console.log("user _id: " + req.user.id);
+//   saveArticle({
+//     author: req.user.id,
+//     text: req.body.text,
+//     title: req.body.title,
+//     description: req.body.description,
+//     ingredients: req.body.ingredients,
+//     category: req.body.category,
+//     feature_img: '',
+//   });
+//   res.redirect('/');
+// }
 
 exports.getAll = (req, res, next) => {
-  Article.find(req.user.id)
-    .populate('author')
-    .populate('comments.author').exec((err, article)=> {
-    if (err)
-      res.send(err)
-    else if (!article)
-      res.send(404)
-    else
-      res.send(article)
-    next()
+  console.log(req.user.id)
+  User.find({_id: req.user.id})
+    .populate('articles').exec((err, articles)=> {
+    res.json(articles);
   })
 };
+

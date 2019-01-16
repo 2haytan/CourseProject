@@ -155,7 +155,7 @@ app.post('/account/delete', passportConfig.isAuthenticated, userController.postD
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/my_articles', passportConfig.isAuthenticated, articlecontroller.index);
 app.post('/my_articles', passportConfig.isAuthenticated, multipartWare, articlecontroller.postArticle);
-// app.get('/my_articles/all', passportConfig.isAuthenticated, articlecontroller.postArticle);
+ app.get('/my_articles/all', passportConfig.isAuthenticated, articlecontroller.getAll);
 
 /**
  * API examples routes.
